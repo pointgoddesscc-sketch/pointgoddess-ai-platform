@@ -1,4 +1,9 @@
+/**
+ * Root layout — Point Goddess CC AI Platform
+ * Includes Vercel Web Analytics for automatic page views + custom conversion events.
+ */
 import type { Metadata } from 'next';
+import { Analytics } from '@vercel/analytics/react';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -22,6 +27,8 @@ export default function RootLayout({
     <html lang="en">
       <body className="antialiased min-h-screen bg-[#0a0a0f] text-slate-100">
         {children}
+        {/* Vercel Web Analytics — tracks page views + custom conversion events */}
+        <Analytics />
       </body>
     </html>
   );

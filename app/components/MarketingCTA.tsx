@@ -1,8 +1,9 @@
 /**
  * Marketing Call-to-Action Button
- * Professional, accessible CTA component optimized for conversion tracking
- * on Point Goddess CC business & marketing websites.
+ * Professional, accessible CTA component with built-in conversion tracking.
+ * Optimized for Point Goddess CC business & marketing websites.
  *
+ * Automatically fires a Vercel Analytics `cta_click` event when clicked.
  * Compatible with GitHub Copilot / Codex BYOK and Vercel Edge deployments.
  *
  * @module MarketingCTA
@@ -11,13 +12,14 @@
  *   label="Start Free Trial"
  *   href="/demo"
  *   variant="primary"
- *   onClick={() => trackEvent('cta_click', { location: 'hero' })}
+ *   location="hero"
  * />
  */
 
 'use client';
 
 import React from 'react';
+import { trackCTAClick } from '@/lib/analytics';
 
 export type CTAVariant = 'primary' | 'secondary' | 'outline';
 
@@ -28,7 +30,9 @@ export interface MarketingCTAProps {
   href: string;
   /** Visual style variant */
   variant?: CTAVariant;
-  /** Optional analytics callback fired on click */
+  /** Location on the page for conversion reporting (hero, pricing, footer...) */
+  location?: string;
+  /** Optional additional analytics callback fired after tracking */
   onClick?: (event: React.MouseEvent<HTMLAnchorElement>) => void;
   /** Additional CSS classes */
   className?: string;
@@ -36,17 +40,28 @@ export interface MarketingCTAProps {
 
 /**
  * Renders a fully accessible marketing CTA button.
- * Uses semantic <a> with role="button" for screen readers and SEO.
+ * Tracks conversion events automatically via Vercel Web Analytics.
  */
 export function MarketingCTA({
   label,
   href,
   variant = 'primary',
+  location = 'unknown',
   onClick,
   className = '',
 }: MarketingCTAProps) {
   const baseClass = 'cta-button';
   const variantClass = `cta-button--${variant}`;
+
+  const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    // Fire conversion event first
+    trackCTAClick(label, location);
+
+    // Then call any custom handler
+    if (onClick) {
+      onClick(event);
+    }
+  };
 
   return (
     <a
@@ -54,7 +69,7 @@ export function MarketingCTA({
       className={`${baseClass} ${variantClass} ${className}`}
       role="button"
       aria-label={label}
-      onClick={onClick}
+      onClick={handleClick}
     >
       {label}
     </a>

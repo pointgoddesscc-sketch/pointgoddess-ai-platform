@@ -1,7 +1,7 @@
 /**
  * Point Goddess CC — AI Platform Homepage
  * Business & marketing landing page with full TypeScript documentation.
- * Optimized for conversion, SEO, and GitHub Copilot / Codex agent workflows.
+ * All CTAs now fire custom conversion events via Vercel Web Analytics.
  *
  * @module HomePage
  */
@@ -30,11 +30,13 @@ export default function HomePage() {
               label="Start Free Trial"
               href="/demo"
               variant="primary"
+              location="hero"
             />
             <MarketingCTA
               label="View Live Docs"
               href="https://github.com/pointgoddesscc-sketch/pointgoddess-ai-platform"
               variant="outline"
+              location="hero"
             />
           </div>
         </div>
@@ -74,6 +76,7 @@ export default function HomePage() {
             label="Open GitHub Repository"
             href="https://github.com/pointgoddesscc-sketch/pointgoddess-ai-platform"
             variant="primary"
+            location="footer"
           />
         </div>
       </section>

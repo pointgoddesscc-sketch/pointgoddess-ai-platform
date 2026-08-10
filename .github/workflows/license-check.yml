@@ -1,0 +1,43 @@
+name: License Compliance Check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  check-license:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify LICENSE exists
+        run: |
+          if [ ! -f LICENSE ]; then
+            echo "ERROR: LICENSE file is missing"
+            exit 1
+          fi
+          echo "LICENSE present"
+
+      - name: Verify NOTICE exists
+        run: |
+          if [ ! -f NOTICE ]; then
+            echo "ERROR: NOTICE file is missing"
+            exit 1
+          fi
+          echo "NOTICE present"
+
+      - name: Verify Apache License content
+        run: |
+          if ! grep -q "Apache License" LICENSE; then
+            echo "ERROR: LICENSE does not appear to be Apache License 2.0"
+            exit 1
+          fi
+          if ! grep -q "Point Goddess CC" NOTICE; then
+            echo "ERROR: NOTICE does not contain expected copyright"
+            exit 1
+          fi
+          echo "Apache License 2.0 compliance verified for Point Goddess CC"

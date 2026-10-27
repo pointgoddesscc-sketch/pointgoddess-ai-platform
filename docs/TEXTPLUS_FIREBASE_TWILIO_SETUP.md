@@ -15,6 +15,10 @@
 6. Apply `firestore.rules` and test that unauthenticated and non-member access is denied.
 
 ## Required Vercel environment variables
+
+Optional assistant:
+- `GEMINI_API_KEY` (server-only; enables the user-invoked assistant)
+- `GEMINI_MODEL` (optional; defaults to `gemini-2.5-flash`)
 Client (public Firebase config; not a credential for admin access):
 - `NEXT_PUBLIC_FIREBASE_API_KEY`
 - `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN`

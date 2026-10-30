@@ -19,9 +19,13 @@ export async function POST(request: Request) {
     }
     const sid = process.env.TWILIO_ACCOUNT_SID;
     const token = process.env.TWILIO_AUTH_TOKEN;
+    const apiKeySid = process.env.TWILIO_API_KEY;
+    const apiKeySecret = process.env.TWILIO_API_SECRET;
     const from = process.env.TWILIO_PHONE_NUMBER;
     const messagingServiceSid = process.env.TWILIO_MESSAGING_SERVICE_SID;
-    if (!sid || !token || (!from && !messagingServiceSid)) {
+    const hasApiKey = Boolean(apiKeySid && apiKeySecret);
+    const hasAuthToken = Boolean(token);
+    if (!sid || (!hasApiKey && !hasAuthToken) || (!from && !messagingServiceSid)) {
       return NextResponse.json({ error: "SMS service is not configured. Add Twilio credentials and a sending number in Vercel." }, { status: 503 });
     }
 
@@ -40,7 +44,11 @@ export async function POST(request: Request) {
     });
     if (!allowed) return NextResponse.json({ error: "Daily SMS limit reached. Try again later." }, { status: 429 });
 
-    const client = twilio(sid, token);
+    // Prefer a revocable Standard API Key for REST calls in production.
+    // Keep TWILIO_AUTH_TOKEN configured separately for webhook signature validation.
+    const client = hasApiKey
+      ? twilio(apiKeySid!, apiKeySecret!, { accountSid: sid })
+      : twilio(sid, token!);
     const message = await client.messages.create({
       to,
       body,

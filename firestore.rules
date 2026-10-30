@@ -1,0 +1,14 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Server-side SMS logs and inbound provider inbox are not directly readable
+    // until number ownership and account mapping are implemented.
+    match /textplusMessages/{document=**} { allow read, write: if false; }
+    match /textplusInboundSms/{document=**} { allow read, write: if false; }
+    match /textplusRateLimits/{document=**} { allow read, write: if false; }
+
+    // Default deny. Add explicit membership-based rules before enabling chat
+    // documents or user profile reads/writes.
+    match /{document=**} { allow read, write: if false; }
+  }
+}
